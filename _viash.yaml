@@ -1,0 +1,29 @@
+viash_version: 0.9.7
+
+name: ist_workflow
+version: dev
+
+license: MIT
+keywords: [spatial transcriptomics, imaging-based spatial transcriptomics, preprocessing]
+
+label: iST preprocessing workflow
+summary: Run one preprocessing pipeline (one method per step) on an imaging-based spatial transcriptomics dataset.
+description: |
+  Takes a raw iST SpatialData zarr and a single-cell reference, runs segmentation, transcript
+  assignment, count aggregation, QC filtering, cell volume calculation, normalization, cell type
+  annotation, expression correction and gene-efficiency correction with the method chosen for
+  each step in a user config, and aggregates the result into one SpatialData zarr.
+
+  The method implementations are not part of this repository: they are pulled from
+  openproblems-bio/task_ist_preprocessing (build/main) via the `tip` repository below.
+
+# Resolves the resource labels the task_ist_preprocessing methods carry (copied verbatim from
+# that repo's _viash.yaml so the methods get the same resources here).
+config_mods: |
+  .runners[.type == "nextflow"].config.labels := { lowmem : "memory = 20.Gb", midmem : "memory = 50.Gb", highmem : "memory = 100.Gb", lowcpu : "cpus = 5", midcpu : "cpus = 15", highcpu : "cpus = 30", lowtime : "time = 1.h", midtime : "time = 4.h", hightime : "time = 8.h", veryhightime : "time = 24.h" }
+
+repositories:
+  - name: tip
+    type: github
+    repo: openproblems-bio/task_ist_preprocessing
+    tag: build/main

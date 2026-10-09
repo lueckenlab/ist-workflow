@@ -1,0 +1,11 @@
+# Per-user site settings. Copy to configs/site.yaml (git-ignored) and fill in your paths:
+#   cp configs/site.example.yaml configs/site.yaml
+# Use paths on Lustre: not $HOME (50 GB quota) and not /tmp (not writable inside containers on
+# compute nodes). $VARS such as $USER are expanded. The environment variables IST_SIF_DIR /
+# IST_MODEL_CACHE, if set, override these values.
+
+# Apptainer images (scripts/hpc/pull_images.sh writes them here, Nextflow reads them from here)
+sif_dir: <path>/singularity/ist_workflow
+
+# Downloaded model weights (cellpose, torch hub, HuggingFace, keras), shared by all runs
+model_cache: <path>/ist_workflow/model_cache

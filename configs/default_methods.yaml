@@ -1,0 +1,49 @@
+# One method per step. Copy this file, change what you need, and pass it as `methods_config`.
+#
+#   <step>:
+#     method: <component name>          # see the list of options per step below
+#     args:   {<argument>: <value>}     # optional; the component's own arguments, without `--`
+#
+# Steps you leave out fall back to the defaults below (the task_ist_preprocessing default
+# pipeline, also hard-coded in src/workflows/ist_preprocessing/main.nf). Unknown steps or
+# methods make the workflow fail at start-up instead of silently producing nothing.
+# Method arguments: see the component's config.vsh.yaml in
+#   https://github.com/openproblems-bio/task_ist_preprocessing/tree/main/src/<namespace>/<method>
+
+# custom_segmentation | cellpose | cellposev4 | binning | stardist | watershed
+segmentation:
+  method: custom_segmentation
+  # e.g. method: cellpose
+  #      args: {diameter: 30}
+
+# basic_transcript_assignment | baysor | clustermap | pciseq | comseg | proseg | segger | fastreseg
+transcript_assignment:
+  method: basic_transcript_assignment
+
+# basic_count_aggregation
+count_aggregation:
+  method: basic_count_aggregation
+
+# basic_qc_filter
+qc_filtering:
+  method: basic_qc_filter
+
+# alpha_shapes  (only runs when normalization is normalize_by_volume)
+volume_calculation:
+  method: alpha_shapes
+
+# normalize_by_volume | normalize_by_counts | spanorm
+normalization:
+  method: normalize_by_volume
+
+# ssam | tacco | moscot | mapmycells | tangram | singler | rctd
+celltype_annotation:
+  method: tacco
+
+# no_correction | resolvi_correction | split
+expression_correction:
+  method: no_correction
+
+# no_correction | gene_efficiency_correction
+gene_efficiency_correction:
+  method: no_correction
