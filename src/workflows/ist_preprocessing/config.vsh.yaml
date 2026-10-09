@@ -1,0 +1,128 @@
+name: ist_preprocessing
+namespace: workflows
+description: |
+  Run a single iST preprocessing pipeline: one method per step, chosen in `--methods_config`.
+  Stops after aggregating the processed data into one SpatialData zarr; no metrics are computed.
+
+  File formats are those of task_ist_preprocessing, see
+  https://github.com/openproblems-bio/task_ist_preprocessing/tree/main/src/api
+
+argument_groups:
+  - name: Inputs
+    arguments:
+      - name: "--input_sp"
+        type: file
+        direction: input
+        required: true
+        description: Raw iST data as a SpatialData zarr (task_ist_preprocessing `file_raw_ist` format).
+        example: raw_ist.zarr
+      - name: "--input_sc"
+        type: file
+        direction: input
+        required: true
+        description: Single-cell reference h5ad (task_ist_preprocessing `file_scrnaseq_reference` format).
+        example: scrnaseq_reference.h5ad
+      - name: "--methods_config"
+        type: file
+        direction: input
+        required: false
+        description: |
+          YAML selecting one method (and optionally its arguments) per step, e.g.
+
+            segmentation: {method: cellpose, args: {diameter: 30}}
+            celltype_annotation: {method: tacco}
+
+          Steps left out fall back to the defaults in configs/default_methods.yaml.
+        example: configs/default_methods.yaml
+  - name: Outputs
+    arguments:
+      - name: "--output"
+        type: file
+        direction: output
+        required: true
+        description: Aggregated SpatialData zarr (raw data + assignments + QC column + corrected counts).
+        default: "$id/output.zarr"
+      - name: "--output_counts"
+        type: file
+        direction: output
+        required: true
+        description: Final corrected count matrix with cell types (h5ad).
+        default: "$id/counts.h5ad"
+
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
+
+# All methods come from task_ist_preprocessing (see `repositories` in /_viash.yaml).
+dependencies:
+  - name: methods_segmentation/custom_segmentation
+    repository: tip
+  - name: methods_segmentation/cellpose
+    repository: tip
+  - name: methods_segmentation/cellposev4
+    repository: tip
+  - name: methods_segmentation/binning
+    repository: tip
+  - name: methods_segmentation/stardist
+    repository: tip
+  - name: methods_segmentation/watershed
+    repository: tip
+  - name: methods_transcript_assignment/basic_transcript_assignment
+    repository: tip
+  - name: methods_transcript_assignment/baysor
+    repository: tip
+  - name: methods_transcript_assignment/clustermap
+    repository: tip
+  - name: methods_transcript_assignment/pciseq
+    repository: tip
+  - name: methods_transcript_assignment/comseg
+    repository: tip
+  - name: methods_transcript_assignment/proseg
+    repository: tip
+  - name: methods_transcript_assignment/segger
+    repository: tip
+  - name: methods_transcript_assignment/fastreseg
+    repository: tip
+  - name: methods_count_aggregation/basic_count_aggregation
+    repository: tip
+  - name: methods_qc_filter/basic_qc_filter
+    repository: tip
+  - name: methods_calculate_cell_volume/alpha_shapes
+    repository: tip
+  - name: methods_normalization/normalize_by_counts
+    repository: tip
+  - name: methods_normalization/normalize_by_volume
+    repository: tip
+  - name: methods_normalization/spanorm
+    repository: tip
+  - name: methods_cell_type_annotation/ssam
+    repository: tip
+  - name: methods_cell_type_annotation/tacco
+    repository: tip
+  - name: methods_cell_type_annotation/moscot
+    repository: tip
+  - name: methods_cell_type_annotation/mapmycells
+    repository: tip
+  - name: methods_cell_type_annotation/tangram
+    repository: tip
+  - name: methods_cell_type_annotation/singler
+    repository: tip
+  - name: methods_cell_type_annotation/rctd
+    repository: tip
+  - name: methods_expression_correction/no_correction
+    repository: tip
+  - name: methods_expression_correction/resolvi_correction
+    repository: tip
+  - name: methods_expression_correction/split
+    repository: tip
+  - name: methods_gene_efficiency_correction/no_correction
+    repository: tip
+    alias: gene_eff_no_correction
+  - name: methods_gene_efficiency_correction/gene_efficiency_correction
+    repository: tip
+  - name: methods_data_aggregation/aggregate_spatial_data
+    repository: tip
+
+runners:
+  - type: nextflow

@@ -1,0 +1,43 @@
+# --- per-user settings (paths to your workspace; template: configs/site.example.yaml)
+/configs/site.yaml
+
+# --- Seqera/Nebius launcher: contains the org's Seqera workspace and compute-env IDs; local only
+/scripts/run_nebius.sh
+
+# --- build output (scripts/build.sh; recreate with viash ns build)
+/target
+
+# --- run outputs, logs and Nextflow state
+/output
+/work
+/logs
+/.nextflow
+/.nextflow*
+trace*.txt
+timeline*.html
+report*.html
+dag*.html
+dag*.dot
+
+# --- test data (downloaded from s3://openproblems-data, see .claude/PIPELINE.md section 9)
+/resources_test
+
+# --- container images (live in sif_dir, never in the repo)
+*.sif
+*.img
+*.img.part
+
+# --- Claude Code: personal settings stay local; .claude/PIPELINE.md and .claude/skills/ are shared
+/.claude/settings.local.json
+
+# --- Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints
+
+# --- editors / OS
+.vscode/
+.idea/
+*.swp
+*~
+*.DS_Store
